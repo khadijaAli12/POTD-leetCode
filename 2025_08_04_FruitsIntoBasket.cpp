@@ -1,6 +1,6 @@
 // LeetCode POTD - 2025/08/04
 // Problem: Fruit Into Baskets
-// Link: https://leetcode.com/problems/fruit-into-baskets/
+[Fruit Into Baskets – LeetCode](https://leetcode.com/problems/fruit-into-baskets/)
 // Tags: Sliding Window, Hash Map
 // Approach: Maintain a sliding window with at most 2 types of fruits.
 
