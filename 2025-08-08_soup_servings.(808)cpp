@@ -1,0 +1,49 @@
+/*
+LeetCode Problem: 808 - Soup Servings
+Date: 2025-08-09
+Tags: DP (Dynamic Programming), Probability, Memoization
+Concepts:
+    - Use recursion + memoization to store intermediate probabilities.
+    - The state is defined by the remaining quantity of Soup A and Soup B.
+    - For large n (n >= 5000), the probability approaches 1, so we can directly return 1.
+    - Serving options: {100,0}, {75,25}, {50,50}, {25,75}, each with equal probability.
+
+Approach:
+    1. Define all 4 serving combinations.
+    2. Recursively calculate the probability that soup A becomes empty first.
+    3. Use memoization table `t` to avoid recomputation.
+    4. For large inputs, return 1 immediately for efficiency.
+*/
+
+class Solution {
+    public:
+        // All possible serving options
+        vector<pair<int,int>> serving = {{100,0}, {75,25}, {50,50}, {25,75}};
+        vector<vector<double>> t; // Memoization table
+    
+        double emptySoupA(double a, double b) {
+            if (a <= 0 && b <= 0) return 0.5; // Both empty at the same time
+            if (a <= 0) return 1.0;            // Soup A empty first
+            if (b <= 0) return 0.0;            // Soup B empty first
+    
+            if (t[a][b] != -1.0) return t[a][b]; // Already computed
+    
+            double probability = 0.0;
+            for (auto &p : serving) {
+                int A_taken = p.first;
+                int B_taken = p.second;
+                probability += emptySoupA(a - A_taken, b - B_taken);
+            }
+    
+            return t[a][b] = 0.25 * probability; // Equal probability for all servings
+        }
+    
+        double soupServings(int n) {
+            // For large n, probability is effectively 1
+            if (n >= 5000) return 1;
+    
+            t.resize(n + 1, vector<double>(n + 1, -1.0));
+            return emptySoupA(n, n);
+        }
+    };
+    
