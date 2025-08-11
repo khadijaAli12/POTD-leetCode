@@ -1,0 +1,35 @@
+class Solution {
+public:
+     const int MOD =  1e9 + 7 ;
+    vector<int>  builtPower(vector<int> &p, int n){
+        for(int i=0;i<32;i++){
+            if((n & (1 << i)) !=0 ){
+                // bit is set.
+                p.push_back(1 << i);
+            }
+        }
+        return p;
+    }
+    vector<int> productQueries(int n, vector<vector<int>>& q) {
+   
+        vector<int> power;
+        builtPower(power,n);
+        vector<int> answer;
+        for(int i=0;i<q.size();i++){
+            int left=q[i][0];
+            int right = q[i][1];
+            long product =1;
+            for(int j=left;j<=right;j++){
+                product = (product * power[j]) % MOD ;
+            }
+            answer.push_back(product);
+        }
+        return answer;
+    }
+};
+// how to check in n the ith bit is set or not by this:
+//if((n & (1 << i)) != 0) // bit is set.
+//pow(2,3) === 1 << 3
+
+
+
