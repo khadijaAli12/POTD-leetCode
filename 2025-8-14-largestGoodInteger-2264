@@ -1,0 +1,19 @@
+class Solution {
+public:
+    string largestGoodInteger(string num) {
+        string maxGood = "";
+        int n = num.size();
+
+        for (int i = 0; i <= n - 3; i++) {
+            // Check if the current substring of length 3 has all same digits
+            if (num[i] == num[i + 1] && num[i] == num[i + 2]) {
+                string current = num.substr(i, 3);
+                if (current > maxGood) {
+                    maxGood = current; // Update the maximum good integer
+                }
+            }
+        }
+
+        return maxGood; // Will return "" if no good integer exists
+    }
+};
