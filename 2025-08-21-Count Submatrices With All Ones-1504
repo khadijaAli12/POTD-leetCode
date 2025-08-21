@@ -1,0 +1,33 @@
+class Solution {
+public:
+    int oneD_array(vector<int> &vec){
+        int consec=0;
+        int subArray=0;
+        for(auto &val: vec){
+            if(val == 1){
+                consec++;
+            }
+            else{
+                consec=0;
+            }
+            subArray+=consec;
+        }
+        return subArray;
+    }
+    int numSubmat(vector<vector<int>>& mat) {
+        int n = mat.size(); // row
+        int m = mat[0].size(); // column
+        int res= 0;
+        for(int start=0;start<n;start++){
+            vector<int> vec(m,1);
+            for(int endPoint=start;endPoint<n;endPoint++){
+                for(int col=0;col<m;col++){
+                    vec[col] = vec[col] & mat[endPoint][col];
+                }
+                res+= oneD_array(vec);
+            }
+
+        }
+        return res;
+    }
+};
