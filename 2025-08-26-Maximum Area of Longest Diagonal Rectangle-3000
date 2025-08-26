@@ -1,0 +1,44 @@
+// 🔹 Problem Intuition:
+// We are given a list of rectangles (with length and width).
+// We need to find the rectangle that has the *longest diagonal*.
+// If multiple rectangles have the same diagonal length, 
+// then choose the one with the *largest area*.
+// Finally, return that rectangle's area.
+
+// 🔹 Why diagonal length?
+// The diagonal of a rectangle with sides (l, w) is: √(l² + w²).
+// Since square root is a monotonically increasing function, 
+// we don’t actually need to compute it (which avoids precision issues).
+// Instead, we can directly compare l² + w² (the square of the diagonal).
+
+// 🔹 Steps:
+// 1. Iterate over each rectangle [l, w].
+// 2. Compute diagonal squared = l² + w².
+// 3. Compute area = l × w.
+// 4. Keep track of the rectangle with maximum diagonal.
+//    - If diagonals are equal, prefer the one with larger area.
+// 5. Return the area of the chosen rectangle.
+
+class Solution {
+public:
+    int areaOfMaxDiagonal(vector<vector<int>>& dimensions) {
+        int maxDia = -1;   // Store the maximum diagonal squared found
+        int maxArea = -1;  // Store the maximum area for that diagonal
+
+        for (auto d : dimensions) {
+            int l = d[0], w = d[1];
+            int diaSq = l * l + w * w; // diagonal squared
+            int area = l * w;
+
+            // Update conditions:
+            // - If new rectangle has strictly larger diagonal
+            // - Or if diagonals are equal, prefer the one with larger area
+            if (diaSq > maxDia || (diaSq == maxDia && area > maxArea)) {
+                maxDia = diaSq;
+                maxArea = area;
+            }
+        }
+
+        return maxArea; // Answer is the area of rectangle with max diagonal
+    }
+};
