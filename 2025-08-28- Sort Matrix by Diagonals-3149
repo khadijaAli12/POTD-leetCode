@@ -1,0 +1,67 @@
+// 🔹 LeetCode 3149. Sort Matrix by Diagonals
+// Problem: https://leetcode.com/problems/sort-matrix-by-diagonals/
+
+class Solution {
+public:
+    // Helper function to sort one diagonal of the matrix
+    void SortMat(int r , int c, vector<vector<int>>& grid ,int n, bool ascending){
+        int i = r, j = c;
+        vector<int> vec;
+
+        // collect all diagonal elements starting from (r, c)
+        while(i < n && j < n){
+            vec.push_back(grid[i][j]);
+            i++; j++;
+        }
+
+        // sort diagonal in required order
+        if(ascending)
+            sort(vec.begin(), vec.end());
+        else
+            sort(vec.begin(), vec.end(), greater<int>());
+
+        // put back sorted values into the grid
+        i = r, j = c;
+        for(auto &val : vec){
+            grid[i][j] = val;
+            i++; j++;
+        }
+    }
+
+    vector<vector<int>> sortMatrix(vector<vector<int>>& grid) {
+        int n = grid.size();
+
+        // Intuition (in casual manner):
+        // Think of the matrix as a bunch of diagonals.
+        // Each diagonal (top-left → bottom-right) should be sorted,
+        // but with a twist: 
+        // - Diagonals starting from the first column go in DESC order.
+        // - Diagonals starting from the first row go in ASC order.
+        //
+        // So the game plan is:
+        // 1. For every row (starting at col=0), sort its diagonal in DESC.
+        // 2. For every column (starting at row=0), sort its diagonal in ASC.
+        //
+        // This way, we process all diagonals exactly once.
+
+        // sort diagonals starting from first column (row = 0..n-1) in DESC
+        for(int row = 0; row < n; row++){
+            SortMat(row, 0, grid, n, false);
+        }
+
+        // sort diagonals starting from first row (col = 1..n-1) in ASC
+        for(int col = 1; col < n; col++){
+            SortMat(0, col, grid, n, true);
+        }
+
+        return grid;
+    }
+};
+
+// --------------------------------------------------
+// ⏱️ Time Complexity: O(n^2 log n)
+//    - There are O(2n) diagonals, each up to length n.
+//    - Sorting each diagonal takes O(k log k), summed across diagonals → O(n^2 log n).
+//
+// 💾 Space Complexity: O(n) 
+//    - For storing one diagonal in `vec` at a time.
