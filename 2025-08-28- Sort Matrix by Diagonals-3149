@@ -65,3 +65,64 @@ public:
 //
 // 💾 Space Complexity: O(n) 
 //    - For storing one diagonal in `vec` at a time.
+
+// second appraoch:
+
+
+class Solution {
+public:
+    vector<vector<int>> sortMatrix(vector<vector<int>>& grid) {
+        int n = grid.size();
+        unordered_map<int, vector<int>> mp;
+
+        // Step 1: Group elements by their diagonals
+        // Each diagonal can be uniquely identified by (i - j).
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int diag = i - j;
+                mp[diag].push_back(grid[i][j]);
+            }
+        }
+
+        // Step 2: Sort each diagonal according to rules
+        // - If diagonal key >= 0 (starts from or below main diag) → ascending
+        // - If diagonal key < 0 (above main diag) → descending
+        for (auto& it : mp) {
+            if (it.first >= 0) {
+                sort(begin(it.second), end(it.second));  // ascending
+            } else {
+                sort(rbegin(it.second), rend(it.second)); // descending
+            }
+        }
+
+        // Step 3: Put values back into the grid
+        // We take values from the "back" because sorted order was stored,
+        // and we want to place them from top-left → bottom-right correctly.
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                int diag = i - j;
+                grid[i][j] = mp[diag].back();
+                mp[diag].pop_back();
+            }
+        }
+
+        return grid;
+    }
+};
+
+// --------------------------------------------------
+// 💡 Intuition (casual):
+// Instead of walking every diagonal separately, just bucket numbers
+// by their diagonal index (i - j).
+// Then sort each bucket:
+//   - Diagonals starting on/below the main diagonal → ascending
+//   - Diagonals above the main diagonal → descending
+// Finally, fill the matrix back from these sorted buckets.
+// Much cleaner than handling row/col starts manually!
+//
+// ⏱️ Time Complexity: O(n^2 log n)
+//   - Each element belongs to exactly one diagonal.
+//   - Sorting across all diagonals costs ~O(n^2 log n).
+//
+// 💾 Space Complexity: O(n^2)
+//   - Extra storage in unordered_map for all matrix elements.
