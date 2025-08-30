@@ -1,0 +1,110 @@
+// 🔹 LeetCode Problem: 36. Valid Sudoku
+// 🔗 Link: https://leetcode.com/problems/valid-sudoku/
+
+// ------------------------------------------------------------
+// 🧠 Intuition:
+// A valid Sudoku board must satisfy three rules:
+// 1. Each row contains digits 1–9 without repetition.
+// 2. Each column contains digits 1–9 without repetition.
+// 3. Each 3×3 sub-box contains digits 1–9 without repetition.
+//
+// Approach 1 (using set<char>): 
+// - Check rows, columns, and sub-boxes separately using sets.
+// - If any duplicate digit is found, return false.
+//
+// Approach 2 (using unordered_set<string>):
+// - Traverse the board once.
+// - For each digit, encode its position into unique keys:
+//   "digit_row_i", "digit_col_j", "digit_box_x_y"
+// - If any key already exists, the board is invalid.
+// - Otherwise insert all keys into the set.
+// This avoids writing 3 separate loops and gives a concise solution.
+//
+// ------------------------------------------------------------
+// ⏱️ Time Complexity: O(81) ≈ O(1) 
+// (Sudoku board is fixed 9×9, at most 81 cells checked)
+//
+// 💾 Space Complexity:
+// - Approach 1: O(9) for each set → overall O(1) (constant size).
+// - Approach 2: O(81) strings in unordered_set → still O(1).
+// ------------------------------------------------------------
+
+
+// ✅ Approach 1: Using set<char> for rows, cols, sub-boxes
+class Solution1 {
+public:
+    bool traverse(vector<vector<char>>& board, int sr, int er, int sc, int ec) {
+        set<char> st;
+        for (int i = sr; i <= er; i++) {
+            for (int j = sc; j <= ec; j++) {
+                if (board[i][j] == '.') continue;
+                if (st.find(board[i][j]) != st.end()) return false;
+                st.insert(board[i][j]);
+            }
+        }
+        return true;
+    }
+
+    bool isValidSudoku(vector<vector<char>>& board) {
+        // ✅ Check rows
+        for (int row = 0; row < 9; row++) {
+            set<char> st;
+            for (int col = 0; col < 9; col++) {
+                if (board[row][col] == '.') continue;
+                if (st.find(board[row][col]) != st.end()) return false;
+                st.insert(board[row][col]);
+            }
+        }
+
+        // ✅ Check columns
+        for (int col = 0; col < 9; col++) {
+            set<char> st;
+            for (int row = 0; row < 9; row++) {
+                if (board[row][col] == '.') continue;
+                if (st.find(board[row][col]) != st.end()) return false;
+                st.insert(board[row][col]);
+            }
+        }
+
+        // ✅ Check 3×3 sub-boxes
+        for (int sr = 0; sr < 9; sr += 3) {
+            int er = sr + 2;
+            for (int sc = 0; sc < 9; sc += 3) {
+                int ec = sc + 2;
+                if (!traverse(board, sr, er, sc, ec)) return false;
+            }
+        }
+        return true;
+    }
+};
+
+
+// ✅ Approach 2: Using unordered_set<string> (One-pass trick)
+class Solution2 {
+public:
+    bool isValidSudoku(vector<vector<char>>& board) {
+        unordered_set<string> st;
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') continue;
+
+                string row = string(1, board[i][j]) + "_row_" + to_string(i);
+                string col = string(1, board[i][j]) + "_col_" + to_string(j);
+                string box = string(1, board[i][j]) + "_box_" + 
+                             to_string(i / 3) + "_" + to_string(j / 3);
+
+                if (st.find(row) != st.end() || 
+                    st.find(col) != st.end() || 
+                    st.find(box) != st.end()) {
+                    return false;
+                }
+
+                st.insert(row);
+                st.insert(col);
+                st.insert(box);
+            }
+        }
+        return true;
+    }
+};
